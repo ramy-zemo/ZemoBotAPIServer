@@ -1,0 +1,11 @@
+*.log
+*.db
+.*
+!/.gitignore
+venv/
+cogs/__pycache__/
+etc/__pycache__/
+__pycache__/
+playground.py
+config.py
+test.py
