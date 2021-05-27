@@ -92,6 +92,3 @@ register_tortoise(
     generate_schemas=True,
     add_exception_handlers=True
 )
-
-if __name__ == '__main__':
-    os.system('uvicorn main:app --reload')
