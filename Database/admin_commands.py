@@ -20,6 +20,7 @@ async def create_admin_command(command: str, parameters: str, description: str, 
 
 @admin_commands_router.post("/testing/{password}", tags=["A Testing"])
 async def testing(password, request: Request):
+    return "test"
     print(password)
     print("----------------")
     print(request.headers)

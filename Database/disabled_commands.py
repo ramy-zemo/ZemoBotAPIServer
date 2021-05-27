@@ -6,7 +6,7 @@ from dependencies import authenticate_admin_token
 disabled_commands_router = APIRouter()
 
 
-@disabled_commands_router.post('disabled_commands/disable_command', tags=["Disabled commands"])
+@disabled_commands_router.post('/disabled_commands/disable_command', tags=["Disabled commands"])
 def disable_command(guild_id: int, command: int, admin=Depends(authenticate_admin_token)):
     cur_main.execute("SELECT ID FROM COMMANDS WHERE COMMAND=%s", (command,))
     command_in_db = cur_main.fetchone()
@@ -19,7 +19,7 @@ def disable_command(guild_id: int, command: int, admin=Depends(authenticate_admi
         conn_main.commit()
 
 
-@disabled_commands_router.post('disabled_commands/enable_command', tags=["Disabled commands"])
+@disabled_commands_router.post('/disabled_commands/enable_command', tags=["Disabled commands"])
 def enable_command(guild_id: int, command: str, admin=Depends(authenticate_admin_token)):
     sql = "DELETE FROM DISABLED_COMMANDS WHERE COMMAND_ID=(SELECT ID FROM COMMANDS WHERE COMMAND=%s) AND SERVER_ID=(SELECT ID FROM CONFIG WHERE GUILD_ID=%s)"
     val = (command, guild_id)
@@ -28,7 +28,7 @@ def enable_command(guild_id: int, command: str, admin=Depends(authenticate_admin
     conn_main.commit()
 
 
-@disabled_commands_router.get('disabled_commands/check_command_status_for_guild', tags=["Disabled commands"])
+@disabled_commands_router.get('/disabled_commands/check_command_status_for_guild', tags=["Disabled commands"])
 def check_command_status_for_guild(guild_id: int, command: str, admin=Depends(authenticate_admin_token)):
     sql = "SELECT ID FROM COMMANDS WHERE COMMAND=%s"
     val = (command,)
@@ -48,7 +48,7 @@ def check_command_status_for_guild(guild_id: int, command: str, admin=Depends(au
         return False
 
 
-@disabled_commands_router.get('disabled_commands/get_all_disabled_commands_from_guild', tags=["Disabled commands"])
+@disabled_commands_router.get('/disabled_commands/get_all_disabled_commands_from_guild', tags=["Disabled commands"])
 def get_all_disabled_commands_from_guild(guild_id: int, admin=Depends(authenticate_admin_token)) -> list:
     cur_main.execute("SELECT COMMAND_ID FROM DISABLED_COMMANDS WHERE SERVER_ID=(SELECT ID FROM CONFIG WHERE GUILD_ID=%s)", (guild_id,))
     command_ids = cur_main.fetchall()

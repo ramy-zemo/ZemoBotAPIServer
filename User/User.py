@@ -16,15 +16,14 @@ User_Pydantic = pydantic_model_creator(User, name='User')
 UserIN_Pydantic = pydantic_model_creator(User, name='UserIn', exclude_readonly=True)
 
 
-@router.post('/create_user', response_model=User_Pydantic, tags=["User"])
-@router.post('/create_user', response_model=User_Pydantic, tags=["User"])
+@router.post('/auth/create_user', response_model=User_Pydantic, tags=["User"])
 async def create_user(username: str, password: str, user=Depends(authenticate_user_token)):
     user_obj = User(username=username, password_hash=password, is_admin=False)
     await user_obj.save()
     return await User_Pydantic.from_tortoise_orm(user_obj)
 
 
-@router.post('/create_admin', response_model=User_Pydantic, tags=["User"])
+@router.post('/auth/create_admin', response_model=User_Pydantic, tags=["User"])
 async def create_admin(username: str, password: str, admin=Depends(authenticate_admin_token)):
     user_obj = User(username=username, password_hash=bcrypt.hash(password), is_admin=True)
 
@@ -38,19 +37,19 @@ async def create_admin(username: str, password: str, admin=Depends(authenticate_
     return await User_Pydantic.from_tortoise_orm(user_obj)
 
 
-@router.get('/get_all_users', tags=["User"])
+@router.get('/auth/get_all_users', tags=["User"])
 async def get_all_users(admin=Depends(authenticate_admin_token)):
     return await User.filter()
 
 
-@router.get('/generate_token', tags=['User'])
+@router.get('/auth/generate_token', tags=['User'])
 async def generate_token(user=Depends(authenticate_user)):
     user = await User_Pydantic.from_tortoise_orm(user)
     token = jwt.encode(user.dict(), JWT_SECRET)
     return {"Token": token, "Type": "OpenAPI"}
 
 
-@router.delete('/delete_user', tags=['User'])
+@router.delete('/auth/delete_user', tags=['User'])
 async def delete_user(username: str = "", user_id: int = 0, admin=Depends(authenticate_admin_token)):
     if not username and not user_id:
         raise HTTPException(
