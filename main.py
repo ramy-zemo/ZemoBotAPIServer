@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 from config import ICON_URL
 from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html, get_swagger_ui_oauth2_redirect_html
-from fastapi import HTTPException
 
 from Database.admin_commands import admin_commands_router
 from Database.command_categories import command_categories_router
