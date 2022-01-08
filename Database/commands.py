@@ -8,7 +8,7 @@ commands_router = APIRouter()
 @commands_router.post('/commands/create_command', tags=['Commands'])
 def create_command(category: str, command: str, parameters: str, description: str, admin=Depends(authenticate_admin_token)):
     sql = "INSERT INTO COMMANDS (CATEGORY_ID, COMMAND, PARAMETERS, DESCRIPTION) VALUES ((SELECT ID FROM COMMAND_CATEGORIES WHERE CATEGORY=%s), %s, %s, %s)"
-    val = (category, command, parameters, description)
+    val = (category, command.lower(), parameters, description)
 
     cur_main.execute(sql, val)
     conn_main.commit()

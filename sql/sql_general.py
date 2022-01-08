@@ -9,4 +9,4 @@ conn_main = mysql.connector.connect(
     database=DB_DATABASE,
     auth_plugin='mysql_native_password'
 )
-cur_main = conn_main.cursor()
+cur_main = conn_main.cursor(buffered=True)

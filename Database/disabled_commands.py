@@ -31,20 +31,34 @@ def enable_command(guild_id: int, command: str, admin=Depends(authenticate_admin
 @disabled_commands_router.get('/disabled_commands/check_command_status_for_guild', tags=["Disabled commands"])
 def check_command_status_for_guild(guild_id: int, command: str, admin=Depends(authenticate_admin_token)):
     sql = "SELECT ID FROM COMMANDS WHERE COMMAND=%s"
-    val = (command,)
+    val = (command.lower(),)
 
     cur_main.execute(sql, val)
     data = cur_main.fetchone()
 
     if data and data[0]:
         sql_ = "SELECT * FROM DISABLED_COMMANDS WHERE COMMAND_ID=%s AND SERVER_ID=(SELECT ID FROM CONFIG WHERE GUILD_ID=%s)"
-        val_ = (command, guild_id)
+        val_ = (command.lower(), guild_id)
 
         cur_main.execute(sql_, val_)
         data_ = cur_main.fetchone()
-        return not data_
+        return not bool(data_)
 
     else:
+        sql_ = "SELECT COMMAND_ID FROM COMMAND_ALIASES WHERE ALIAS=%s"
+        val_ = (command.lower(),)
+
+        cur_main.execute(sql_, val_)
+        data_ = cur_main.fetchone()
+
+        if data_ and data_[0]:
+            sql_ = "SELECT * FROM DISABLED_COMMANDS WHERE COMMAND_ID=%s AND SERVER_ID=(SELECT ID FROM CONFIG WHERE GUILD_ID=%s)"
+            val_ = (data_[0], guild_id)
+
+            cur_main.execute(sql_, val_)
+            data_ = cur_main.fetchone()
+            return not data_
+
         return False
 
 
