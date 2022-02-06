@@ -88,4 +88,4 @@ def insert_gaming(server, user, games, languages, status="initial"):
     conn_main.commit()
 
 
-insert_gaming(1231231232, "Ramo#3413", [1, 3, 4], [1, 2, 3])
+insert_gaming(1231231232, "Ramo#1337", [1, 3, 4], [1, 2, 3])
